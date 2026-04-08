@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Console d'Administration</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background: #e2e8f0;">
+
+<nav style="background: #1e293b;">
+  <div class="logo-container">
+    <span class="logo-icon">⚙️</span>
+    <span>Console Admin Système</span>
+  </div>
+  <a href="index.html" style="color: white; text-decoration: none;">🔙 Retour au site public</a>
+</nav>
+
+<div id="login-container" class="form-container" style="max-width: 400px; margin: 100px auto;">
+  <h2 style="text-align: center; margin-bottom: 20px;">Accès Restreint</h2>
+  <input type="text" id="username" placeholder="Identifiant Ingénieur">
+  <input type="password" id="password" placeholder="Mot de passe">
+  <button onclick="login()">Authentification</button>
+  <p id="login-msg" style="color: red; text-align: center; margin-top: 10px;"></p>
+</div>
+
+<div id="add-project-container" style="display: none;">
+  <div class="admin-dashboard">
+
+    <div class="form-container">
+      <h2 style="color: #0f172a; margin-bottom: 20px;">➕ Nouvelle Maquette</h2>
+      <input type="text" id="new-title" placeholder="Titre (ex: Clinique Al Amal)">
+      <input type="text" id="new-category" placeholder="Catégorie (ex: Santé, E-commerce)">
+      <input type="text" id="new-img" placeholder="Lien (ex: images/CliniqueAmal.jpeg)">
+      <textarea id="new-desc" placeholder="Description technique du projet..." rows="4"></textarea>
+      <button onclick="addProject()" style="background: #10b981;">Déployer sur le serveur public</button>
+      <button onclick="logout()" style="background: #ef4444; margin-top: 15px;">Fermer la session</button>
+    </div>
+
+    <div class="graph-container">
+      <h2 style="color: #0f172a; margin-bottom: 20px;">📊 Analyse de l'Agence</h2>
+      <canvas id="agencyChart"></canvas>
+    </div>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Initialisation du graphique Chart.js pour donner un look "WOW" à l'admin
+  const ctx = document.getElementById('agencyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Santé', 'Juridique', 'Restauration', 'IoT/Sécurité'],
+      datasets: [{
+        label: 'Projets par secteur',
+        data: [30, 20, 25, 25],
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#6366f1'],
+        borderWidth: 0
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agence Tech & Sécurité</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="logo-container">
+    <span style="font-weight: 700; color: white;">NEXUS WEB RABAT</span>
+  </div>
+  <div class="nav-links">
+    <a href="#portfolio-section" style="color: white; text-decoration: none;">Réalisations</a>
+    <div class="profile-trigger" onclick="document.getElementById('team-modal').style.display='block'">
+      👨‍💻 Équipe Ingénieurs
+    </div>
+    <a onclick="document.getElementById('contact-modal').style.display='block'" class="btn-contact" style="cursor: pointer;">Nous Contacter</a>
+  </div>
+</nav>
+
+<header style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 2rem;">
+
+  <img src="images/LogoFinal-Photoroom.png"
+       alt="Logo Nexus Web Rabat"
+       style="max-width: 800px;
+              width: 100%;
+              height: auto;
+              margin-bottom: 30px;">
+
+  <h1 style="margin-top: 0; font-size: 2.5rem;">L'Ingénierie au service de votre Web</h1>
+  <p style="margin-top: 10px; font-size: 1.1rem; color: #94a3b8;">Architectures robustes, Design immersif et Cybersécurité intégrée.</p>
+</header>
+
+<main>
+  <section id="portfolio-section">
+    <h2 style="text-align: center; margin-top: 3rem; font-size: 2rem;">Nos Dernières Réalisations</h2>
+    <div id="portfolio-grid" class="grid-container">
+      <p style="text-align: center; width: 100%;">Chargement des serveurs...</p>
+    </div>
+  </section>
+
+  <section style="background: white; padding: 4rem 2rem; text-align: center;">
+    <h2>Pourquoi nous choisir ?</h2>
+    <div style="display: flex; justify-content: center; gap: 40px; margin-top: 2rem; flex-wrap: wrap;">
+      <div style="padding: 20px; border-left: 4px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 2.5rem; color: #0f172a;">100%</h3>
+        <p>Déploiement Sécurisé</p>
+      </div>
+      <div style="padding: 20px; border-left: 4px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 2.5rem; color: #0f172a;">+15</h3>
+        <p>Projets Livrés</p>
+      </div>
+      <div style="padding: 20px; border-left: 4px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 2.5rem; color: #0f172a;">24/7</h3>
+        <p>Monitoring Serveur</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact-section" style="padding: 4rem 2rem; text-align: center; background: #0f172a; color: white;">
+    <h2>Lancez votre projet dès aujourd'hui</h2>
+    <p style="color: #94a3b8; margin-bottom: 2rem;">Laissez nos ingénieurs concevoir votre infrastructure web.</p>
+    <a href="Cahier_des_Charges_NexusWeb.pdf" download="Cahier_des_Charges_NexusWeb.pdf" style="background: white; color: #0f172a; padding: 15px 30px; font-weight: bold; border-radius: 8px; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,255,255,0.2);">📥 Télécharger le Cahier des Charges</a>  </section>
+
+  <div id="team-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; backdrop-filter: blur(5px);">
+    <div style="background: white; width: 90%; max-width: 700px; margin: 8% auto; padding: 30px; border-radius: 15px; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.5);">
+
+      <span onclick="document.getElementById('team-modal').style.display='none'" style="position: absolute; right: 20px; top: 15px; cursor: pointer; font-size: 1.5rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">❌</span>
+
+      <h2 style="color: #0f172a; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; margin-bottom: 25px; text-align: center;">L'Équipe Dirigeante</h2>
+
+      <div style="display: flex; gap: 25px; flex-wrap: wrap; justify-content: center;">
+        <div style="flex: 1; min-width: 260px; background: #f8fafc; padding: 20px; border-radius: 12px; border-top: 5px solid #3b82f6; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size: 3rem; text-align: center; margin-bottom: 10px;">👨‍💻</div>
+          <h3 style="color: #0f172a; text-align: center; margin-bottom: 5px;">Mohammed KEHAL</h3>
+          <p style="color: #3b82f6; font-weight: bold; font-size: 0.9rem; text-align: center; margin-bottom: 15px; min-height: 40px;">Ingénieur Informatique & Cybersécurité</p>
+          <div style="background: white; padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #475569; text-align: center; margin-bottom: 10px; border: 1px solid #e2e8f0;">
+            🎓 <strong>Faculté des Sciences de Rabat (UM5)</strong>
+          </div>
+          <p style="font-size: 0.85rem; color: #64748b; text-align: justify; line-height: 1.5;">
+            Expert en conception d'architectures web, audit de sécurité et protection des données.
+          </p>
+        </div>
+
+        <div style="flex: 1; min-width: 260px; background: #f8fafc; padding: 20px; border-radius: 12px; border-top: 5px solid #10b981; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size: 3rem; text-align: center; margin-bottom: 10px;">👩‍💻</div>
+          <h3 style="color: #0f172a; text-align: center; margin-bottom: 5px;">Omaima ALMA</h3>
+          <p style="color: #10b981; font-weight: bold; font-size: 0.9rem; text-align: center; margin-bottom: 15px; min-height: 40px;">Ingénieure Réseaux, Télécoms & Cybersécurité</p>
+          <div style="background: white; padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #475569; text-align: center; margin-bottom: 10px; border: 1px solid #e2e8f0;">
+            🎓 <strong>ENSA Kénitra</strong>
+          </div>
+          <p style="font-size: 0.85rem; color: #64748b; text-align: justify; line-height: 1.5;">
+            Spécialiste en ingénierie des réseaux, systèmes de télécommunication et sécurisation des flux complexes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="image-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 36, 0.95); z-index: 1000; overflow-y: auto;">
+    <div style="padding: 20px; position: sticky; top: 0;">
+      <button onclick="closeModal()" style="width: auto; background: var(--accent);">⬅ Retour au site</button>
+    </div>
+    <div style="text-align: center; padding: 20px; padding-bottom: 80px;">
+      <img id="modal-img" src="" style="max-width: 90%; border: 2px solid var(--accent); border-radius: 10px;">
+    </div>
+  </div>
+
+  <div id="contact-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; backdrop-filter: blur(5px);">
+    <div style="background: white; width: 90%; max-width: 550px; margin: 8% auto; padding: 30px; border-radius: 15px; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.5);">
+
+      <span onclick="document.getElementById('contact-modal').style.display='none'" style="position: absolute; right: 20px; top: 15px; cursor: pointer; font-size: 1.5rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">❌</span>
+
+      <h2 style="color: #0f172a; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; margin-bottom: 25px; text-align: center;">Prendre Contact</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 15px;">
+
+        <div style="background: #f8fafc; padding: 15px 20px; border-radius: 10px; border-left: 5px solid #3b82f6; transition: 0.3s;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+          <h3 style="color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">👨‍💻 Mohammed KEHAL</h3>
+          <p style="margin-bottom: 5px; font-size: 0.95rem;">📧 <a href="mailto:mohammed.kehal@um5r.ac.ma" style="color: #3b82f6; text-decoration: none; font-weight: 600;">mohammed.kehal@um5r.ac.ma</a></p>
+          <p style="margin-bottom: 5px; font-size: 0.95rem;">📱 +212 6 69 57 83 83</p>
+          <p style="margin-bottom: 0; font-size: 0.95rem;">🔗 <a href="https://www.linkedin.com/in/mohammed-kehal-30a371355/" target="_blank" style="color: #0077b5; text-decoration: none; font-weight: bold;">Profil LinkedIn</a></p>
+        </div>
+
+        <div style="background: #f8fafc; padding: 15px 20px; border-radius: 10px; border-left: 5px solid #10b981; transition: 0.3s;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+          <h3 style="color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">👩‍💻 Omaima ALMA</h3>
+          <p style="margin-bottom: 5px; font-size: 0.95rem;">📧 <a href="mailto:omaima.alma@um5r.ac.ma" style="color: #10b981; text-decoration: none; font-weight: 600;">omaima.alma@um5r.ac.ma</a></p>
+          <p style="margin-bottom: 5px; font-size: 0.95rem;">📱 +212 6 27 08 28 75</p>
+          <p style="margin-bottom: 0; font-size: 0.95rem;">🔗 <a href="https://www.linkedin.com/in/omaima-alma-a61269398/" target="_blank" style="color: #0077b5; text-decoration: none; font-weight: bold;">Profil LinkedIn</a></p>
+        </div>
+
+        <div style="background: #0f172a; color: white; padding: 15px; border-radius: 10px; text-align: center; margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <p style="margin-bottom: 5px; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Standard Agence</p>
+          <p style="font-size: 1.2rem; font-weight: bold; margin: 0;">📞 +212 5 37 85 07 14</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer style="text-align: center; padding: 20px; background: #f8fafc; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 40px;">
+    <p>© 2026 Nexus Web Rabat - Agence de Développement et Cybersécurité.</p>
+    <a href="admin.html" style="text-decoration: none; color: #cbd5e1; font-size: 1rem;" title="Accès Ingénieurs">🔒</a>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

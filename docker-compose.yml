@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: agence_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin_agence
+      POSTGRES_PASSWORD: un_mot_de_passe_tres_fort
+      POSTGRES_DB: agence_portfolio
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
