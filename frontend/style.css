@@ -175,3 +175,20 @@ button {
   transition: 0.3s;
 }
 button:hover { background: #2563eb; }
+
+/* On cible le lien admin dans le footer */
+.admin-link {
+  text-decoration: none;
+  color: #64748b !important; /* Couleur grise de base */
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+/* L'effet au survol sur le lien ET ses enfants */
+.admin-link:hover,
+.admin-link:hover div,
+.admin-link:hover span {
+  color: #3b82f6 !important; /* Bleu électrique */
+  transform: translateY(-3px);
+  cursor: pointer;
+}

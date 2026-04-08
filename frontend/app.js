@@ -1,3 +1,4 @@
+// --- CONFIGURATION API ---
 const API_URL = "http://127.0.0.1:8000/portfolio/";
 const TOKEN_URL = "http://127.0.0.1:8000/token";
 
@@ -8,11 +9,9 @@ window.onload = () => {
   checkAuth();
 };
 
-// --- GESTION DE L'AFFICHAGE (Back-office vs Public) ---
 function checkAuth() {
   const loginDiv = document.getElementById('login-container');
   const addDiv = document.getElementById('add-project-container');
-
   if (!loginDiv || !addDiv) return;
 
   if (token) {
@@ -24,7 +23,6 @@ function checkAuth() {
   }
 }
 
-// --- CONNEXION ---
 async function login() {
   const user = document.getElementById('username').value;
   const pass = document.getElementById('password').value;
@@ -44,6 +42,7 @@ async function login() {
       token = data.access_token;
       localStorage.setItem("jwt_token", token);
       checkAuth();
+      fetchPortfolio(); // On recharge les données pour le graph après login
     } else {
       document.getElementById('login-msg').innerText = "Identifiants incorrects.";
     }
@@ -52,14 +51,12 @@ async function login() {
   }
 }
 
-// --- DÉCONNEXION ---
 function logout() {
   token = null;
   localStorage.removeItem("jwt_token");
   checkAuth();
 }
 
-// --- AJOUTER UN PROJET ---
 async function addProject() {
   const title = document.getElementById('new-title').value;
   const category = document.getElementById('new-category').value;
@@ -91,50 +88,83 @@ async function addProject() {
   }
 }
 
-// --- CHARGER LA GRILLE ET RENDRE LES CARTES CLIQUABLES ---
 async function fetchPortfolio() {
   try {
     const response = await fetch(API_URL);
     const projects = await response.json();
+
+    // 1. Mise à jour de la grille (si on est sur index.html)
     const grid = document.getElementById('portfolio-grid');
+    if (grid) {
+      grid.innerHTML = "";
+      projects.forEach(project => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const fullImageUrl = project.image_url.startsWith('http') ? project.image_url : `http://127.0.0.1:8000/${project.image_url}`;
+        card.onclick = () => openModal(fullImageUrl);
+        card.innerHTML = `
+          <img src="${fullImageUrl}" alt="${project.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Nexus+Web'">
+          <div class="card-content">
+              <span class="category">${project.category}</span>
+              <h3>${project.title}</h3>
+              <p>${project.description}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
 
-    if (!grid) return;
+    // 2. Mise à jour du graphique (si on est sur admin.html)
+    updateAdminChart(projects);
 
-    grid.innerHTML = "";
-
-    projects.forEach(project => {
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      const fullImageUrl = `http://127.0.0.1:8000/${project.image_url}`;
-
-      // On rend toute la carte cliquable
-      card.style.cursor = 'pointer';
-      card.onclick = () => openModal(fullImageUrl);
-
-      card.innerHTML = `
-        <img src="${fullImageUrl}"
-             alt="${project.title}"
-             style="width:100%; height:250px; object-fit:cover;"
-             onerror="this.src='https://via.placeholder.com/600x400?text=Erreur+Extension+Image'">
-        <div class="card-content">
-            <span class="category">${project.category}</span>
-            <h3>${project.title}</h3>
-            <p>${project.description}</p>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
   } catch (error) {
     console.error("Erreur API :", error);
   }
 }
 
-// --- FONCTIONS POUR LA VUE EN PLEIN ÉCRAN (MODAL) ---
+function updateAdminChart(projects) {
+  const canvas = document.getElementById('agencyChart');
+  if (!canvas) return;
+
+  const stats = {};
+  projects.forEach(p => {
+    const cat = p.category || "Autre";
+    stats[cat] = (stats[cat] || 0) + 1;
+  });
+
+  const labels = Object.keys(stats);
+  const dataValues = Object.values(stats);
+
+  if (window.myNexusChart) {
+    window.myNexusChart.destroy();
+  }
+
+  const ctx = canvas.getContext('2d');
+  window.myNexusChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dataValues,
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      cutout: '70%'
+    }
+  });
+}
+
+// --- MODAL ---
 function openModal(imgUrl) {
   const modal = document.getElementById('image-modal');
   const modalImg = document.getElementById('modal-img');
-
   if (modal && modalImg) {
     modalImg.src = imgUrl;
     modal.style.display = 'block';
@@ -144,11 +174,8 @@ function openModal(imgUrl) {
 
 function closeModal() {
   const modal = document.getElementById('image-modal');
-  const modalImg = document.getElementById('modal-img');
-
   if (modal) {
     modal.style.display = 'none';
-    if(modalImg) modalImg.src = "";
     document.body.style.overflow = 'auto';
   }
 }
