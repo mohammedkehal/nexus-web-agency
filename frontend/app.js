@@ -179,3 +179,29 @@ function closeModal() {
     document.body.style.overflow = 'auto';
   }
 }
+
+
+// --- FONCTIONS POUR LE GUIDE CLIENT FLOTTANT ---
+function openGuideModal() {
+  const guideModal = document.getElementById('guide-modal');
+  if (guideModal) {
+    guideModal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Empêche de scroller derrière
+  }
+}
+
+function closeGuideModal() {
+  const guideModal = document.getElementById('guide-modal');
+  if (guideModal) {
+    guideModal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Réactive le scroll
+  }
+}
+
+// Fermer le guide si on clique en dehors de la boîte blanche
+window.onclick = function(event) {
+  const guideModal = document.getElementById('guide-modal');
+  if (event.target === guideModal) {
+    closeGuideModal();
+  }
+}
