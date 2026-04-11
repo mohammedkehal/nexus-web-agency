@@ -17,14 +17,18 @@ window.onload = () => {
 function checkAuth() {
   const loginDiv = document.getElementById('login-container');
   const addDiv = document.getElementById('add-project-container');
+  const accessBtn = document.getElementById('btn-manage-access'); // On récupère le bouton
   if (!loginDiv || !addDiv) return;
 
   if (token) {
     loginDiv.style.display = 'none';
     addDiv.style.display = 'block';
+    if(accessBtn) accessBtn.style.display = 'block'; // On affiche le bouton
+    loadAdmins();
   } else {
     loginDiv.style.display = 'block';
     addDiv.style.display = 'none';
+    if(accessBtn) accessBtn.style.display = 'none'; // On cache le bouton
   }
 }
 
@@ -49,6 +53,7 @@ async function login() {
       checkAuth();
       fetchPortfolio();
       loadAdminRequests();
+      loadAdmins(); // NOUVEAU : On charge la liste des admins juste après le login
     } else {
       document.getElementById('login-msg').innerText = "Identifiants incorrects.";
     }
@@ -287,7 +292,6 @@ async function loadAdminRequests() {
 
         const waNumber = req.whatsapp ? req.whatsapp.replace(/[^0-9]/g, '') : "";
 
-        // MODIFICATION : AJOUT DU BOUTON SUPPRIMER ICI
         tr.innerHTML = `
           <td style="padding: 12px; color: #64748b;">📅 ${dateStr}<br>🕒 ${timeStr}</td>
           <td style="padding: 12px; font-weight: bold; color: #0f172a;">🏢 ${req.company}</td>
@@ -311,7 +315,6 @@ async function loadAdminRequests() {
   } catch (error) { console.error(error); }
 }
 
-// NOUVELLE FONCTION POUR SUPPRIMER CRM
 async function deleteCRMRequest(id) {
   if (!confirm("⚠️ Voulez-vous vraiment supprimer cette demande client ?")) return;
   try {
@@ -365,5 +368,100 @@ window.onclick = function(event) {
   const guideModal = document.getElementById('guide-modal');
   if (event.target === guideModal) {
     closeGuideModal();
+  }
+}
+
+// ==========================================
+// 5. GESTION DES ADMINISTRATEURS (DESIGN PREMIUM)
+// ==========================================
+
+async function loadAdmins() {
+  const currentToken = localStorage.getItem('jwt_token');
+  if (!currentToken) return;
+
+  try {
+    const response = await fetch(`${BASE_URL}/admin/users-list`, {
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+
+    if (response.ok) {
+      const users = await response.json();
+      const listElement = document.getElementById('admins-list');
+      if(listElement) {
+        listElement.innerHTML = '';
+
+        users.forEach(user => {
+          // On récupère la première lettre du pseudo pour l'avatar
+          const initial = user.username.charAt(0).toUpperCase();
+
+          listElement.innerHTML += `
+            <li style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; transition: all 0.2s;" onmouseover="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.02)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none'">
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="background: #e0f2fe; color: #0284c7; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; border: 2px solid #bae6fd;">
+                  ${initial}
+                </div>
+                <div>
+                  <div style="font-weight: 600; color: #0f172a; font-size: 0.95rem;">${user.username}</div>
+                  <div style="color: #64748b; font-size: 0.8rem;">ID Unique : #${user.id}</div>
+                </div>
+              </div>
+              <div style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid #a7f3d0;">
+                <span style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 4px #10b981;"></span> Actif
+              </div>
+            </li>
+          `;
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Erreur de chargement des admins:", error);
+  }
+}
+
+async function createAdmin() {
+  const currentToken = localStorage.getItem('jwt_token');
+  const usernameInput = document.getElementById('new-admin-username').value;
+  const passwordInput = document.getElementById('new-admin-password').value;
+
+  try {
+    const response = await fetch(`${BASE_URL}/admin/create-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
+      },
+      body: JSON.stringify({
+        username: usernameInput,
+        password: passwordInput
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("✅ " + result.message);
+      document.getElementById('create-admin-form').reset();
+      loadAdmins();
+    } else {
+      alert("❌ Erreur : " + result.detail);
+    }
+  } catch (error) {
+    alert("❌ Erreur de connexion au serveur.");
+  }
+}
+
+function openAdminModal() {
+  const modal = document.getElementById('access-modal');
+  if (modal) {
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Empêche de scroller la page derrière
+  }
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('access-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Réactive le scroll
   }
 }

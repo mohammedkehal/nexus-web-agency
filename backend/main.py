@@ -402,3 +402,28 @@ def delete_client_request(request_id: int, db: Session = Depends(get_db), token:
     db.delete(req)
     db.commit()
     return {"message": "Demande supprimée avec succès"}
+
+
+
+# --- GESTION SÉCURISÉE DES ADMINISTRATEURS ---
+
+@app.get("/admin/users-list", tags=["Sécurité"])
+def get_all_admins(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    """Affiche les administrateurs sans exposer les mots de passe hachés"""
+    users = db.query(models.User).all()
+    # On renvoie uniquement l'ID et le Username par sécurité
+    return [{"id": user.id, "username": user.username} for user in users]
+
+@app.post("/admin/create-user", tags=["Sécurité"])
+def create_new_admin(user: schemas.UserCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    """Crée un nouvel admin (Uniquement accessible si on possède un Token JWT valide)"""
+    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Ce nom d'utilisateur est déjà pris !")
+
+    # Hachage du mot de passe avant insertion
+    hashed_pwd = auth.get_password_hash(user.password)
+    new_user = models.User(username=user.username, hashed_password=hashed_pwd)
+    db.add(new_user)
+    db.commit()
+    return {"message": f"L'administrateur '{user.username}' a été créé avec succès."}
