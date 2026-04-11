@@ -170,23 +170,39 @@
 </button>
 
 <div id="guide-modal" class="guide-modal-overlay">
-  <div class="guide-modal-content">
-    <span class="close-guide" onclick="closeGuideModal()">&times;</span>
-    <h2 style="color: #0f172a; margin-bottom: 15px;">🚀 Bienvenue chez Nexus Web</h2>
+  <div class="guide-modal-content" style="max-width: 550px; padding: 30px; border-radius: 12px; position: relative;">
+    <span class="close-guide" onclick="closeGuideModal()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #ef4444;">&times;</span>
 
-    <p style="color: #475569; line-height: 1.6; margin-bottom: 20px;">
-      Notre objectif est de transformer votre vision en une plateforme digitale performante.
-      En tant qu'ingénieurs, nous allions <strong>Développement sur-mesure</strong> et <strong>Cybersécurité</strong> pour garantir un produit robuste et évolutif.
+    <h2 style="color: #0f172a; margin-top: 0; text-align: center;">🚀 Bienvenue chez Nexus Web</h2>
+
+    <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; text-align: center;">
+      Notre objectif est de transformer votre vision en une plateforme digitale performante. En tant qu'ingénieurs, nous allions <strong>Développement sur-mesure</strong> et <strong>Cybersécurité</strong> pour garantir un produit robuste et évolutif.
     </p>
 
-    <div style="background: #f1f5f9; padding: 15px; border-left: 4px solid #3b82f6; border-radius: 4px; margin-bottom: 25px;">
-      <strong>Comment commencer ?</strong><br>
-      Téléchargez notre cahier des charges standardisé. Remplissez-le pour nous décrire votre besoin technique, et notre équipe l'analysera pour vous proposer la meilleure architecture.
+    <div style="border-left: 4px solid #3b82f6; padding: 15px 20px; background: #f8fafc; border-radius: 0 8px 8px 0; margin-bottom: 25px;">
+      <h4 style="margin: 0 0 10px 0; color: #0f172a;">Comment commencer ?</h4>
+      <p style="margin: 0 0 10px 0; color: #475569; font-size: 0.9rem;">Deux options s'offrent à vous :</p>
+      <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 0.9rem; line-height: 1.5;">
+        <li style="margin-bottom: 8px;"><strong>Demande rapide :</strong> Remplissez le formulaire de devis ci-dessous.</li>
+        <li><strong>Projets complexes :</strong> Téléchargez notre cahier des charges, puis renvoyez-le-nous par email ou WhatsApp.</li>
+      </ul>
     </div>
 
-    <a href="Cahier_des_Charges_NexusWeb.pdf" download class="download-btn">
-      📥 Télécharger le Cahier des Charges
-    </a>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+
+      <button onclick="closeGuideModal(); document.getElementById('devis-section').scrollIntoView({behavior: 'smooth'});"
+              style="background: #3b82f6; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); transition: transform 0.2s;"
+              onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        📝 Remplir le formulaire
+      </button>
+
+      <a href="Cahier_des_Charges_NexusWeb.pdf" download="Cahier_des_Charges_NexusWeb.pdf"
+         style="background: #10b981; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); transition: transform 0.2s;"
+         onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        📥 Télécharger le Cahier
+      </a>
+
+    </div>
   </div>
 </div>
 
