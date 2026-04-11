@@ -5,6 +5,7 @@ class PortfolioItemCreate(BaseModel):
     description: str
     category: str
     image_url: str
+    is_visible: bool = True  # <-- LA NOUVELLE LIGNE EST ICI
 
 class PortfolioItemResponse(PortfolioItemCreate):
     id: int

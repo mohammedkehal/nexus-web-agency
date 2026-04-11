@@ -30,7 +30,22 @@
     <div class="form-container">
       <h2 style="color: #0f172a; margin-bottom: 20px;">➕ Nouvelle Maquette</h2>
       <input type="text" id="new-title" placeholder="Titre (ex: Clinique Al Amal)">
-      <input type="text" id="new-category" placeholder="Catégorie (ex: Santé, E-commerce)">
+
+      <select id="new-category" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit; color: #0f172a; background-color: white; cursor: pointer;">
+        <option value="" disabled selected>-- Sélectionnez le secteur d'activité --</option>
+        <option value="Santé & Médical">🏥 Santé & Médical</option>
+        <option value="E-commerce & Vente">🛒 E-commerce & Vente</option>
+        <option value="Corporate & Vitrine">🏢 Corporate & Site Vitrine</option>
+        <option value="Restauration & Hôtellerie">🍽️ Restauration & Hôtellerie</option>
+        <option value="Immobilier & Architecture">🏠 Immobilier & Architecture</option>
+        <option value="SaaS & Application Web">💻 SaaS & Application Web</option>
+        <option value="Cybersécurité & Audit">🛡️ Cybersécurité & Audit</option>
+        <option value="Éducation & E-learning">🎓 Éducation & E-learning</option>
+        <option value="Événementiel & Divertissement">🎉 Événementiel & Divertissement</option>
+        <option value="Association & ONG">🤝 Association & ONG</option>
+        <option value="Autre">✨ Autre secteur</option>
+      </select>
+
       <input type="text" id="new-img" placeholder="Lien (ex: images/CliniqueAmal.jpeg)">
       <textarea id="new-desc" placeholder="Description technique du projet..." rows="4"></textarea>
       <button onclick="addProject()" style="background: #10b981;">Déployer sur le serveur public</button>
@@ -41,6 +56,44 @@
       <h2 style="color: #0f172a; margin-bottom: 20px;">📊 Analyse de l'Agence</h2>
       <div style="position: relative; height: 350px;">
         <canvas id="agencyChart"></canvas>
+      </div>
+    </div>
+
+    <div class="form-container" style="grid-column: 1 / -1; margin-top: 20px; border-top: 4px solid #10b981;">
+      <h2 style="color: #0f172a; margin-bottom: 15px;">🖼️ Gestion du Portfolio</h2>
+      <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">Contrôlez la visibilité de vos réalisations sur le site public.</p>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+          <tr style="background: #1e293b; color: white;">
+            <th style="padding: 12px; border-radius: 8px 0 0 0;">Image</th>
+            <th style="padding: 12px;">Titre du projet</th>
+            <th style="padding: 12px;">Catégorie</th>
+            <th style="padding: 12px;">Statut</th>
+            <th style="padding: 12px; text-align: center; border-radius: 0 8px 0 0;">Actions Administrateur</th>
+          </tr>
+          </thead>
+          <tbody id="admin-portfolio-list">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-container" style="grid-column: 1 / -1; margin-top: 20px; border-top: 4px solid #3b82f6;">
+      <h2 style="color: #0f172a; margin-bottom: 15px;">📩 Historique des Demandes Clients</h2>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+          <thead>
+          <tr style="background: #1e293b; color: white;">
+            <th style="padding: 12px; border-radius: 8px 0 0 0;">Date & Heure</th>
+            <th style="padding: 12px;">Entreprise</th>
+            <th style="padding: 12px;">Gérant</th>
+            <th style="padding: 12px;">Email Contact</th>
+            <th style="padding: 12px; border-radius: 0 8px 0 0; text-align: center;">Actions</th> </tr>
+          </thead>
+          <tbody id="crm-table-body">
+          </tbody>
+        </table>
       </div>
     </div>
 

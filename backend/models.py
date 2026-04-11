@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Boolean # <-- Boolean AJOUTÉ ICI
 from database import Base
 
 class PortfolioItem(Base):
@@ -9,6 +9,7 @@ class PortfolioItem(Base):
     description = Column(Text)      # Ex: "Gestion de rendez-vous en ligne"
     category = Column(String)       # Ex: "Santé", "Restauration", "E-commerce"
     image_url = Column(String)      # Le lien vers l'image du mockup
+    is_visible = Column(Boolean, default=True) # <-- NOUVELLE COLONNE AJOUTÉE ICI
 
 class User(Base):
     __tablename__ = "users"

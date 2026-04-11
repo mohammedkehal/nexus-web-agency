@@ -1,12 +1,17 @@
 // --- CONFIGURATION API ---
-const API_URL = "http://127.0.0.1:8000/portfolio/";
-const TOKEN_URL = "http://127.0.0.1:8000/token";
+const BASE_URL = "http://127.0.0.1:8000";
+const API_URL = `${BASE_URL}/portfolio/`;
+const TOKEN_URL = `${BASE_URL}/token`;
 
 let token = localStorage.getItem("jwt_token");
 
 window.onload = () => {
   fetchPortfolio();
   checkAuth();
+
+  if (document.getElementById('crm-table-body')) {
+    loadAdminRequests();
+  }
 };
 
 function checkAuth() {
@@ -42,7 +47,8 @@ async function login() {
       token = data.access_token;
       localStorage.setItem("jwt_token", token);
       checkAuth();
-      fetchPortfolio(); // On recharge les données pour le graph après login
+      fetchPortfolio();
+      loadAdminRequests();
     } else {
       document.getElementById('login-msg').innerText = "Identifiants incorrects.";
     }
@@ -57,13 +63,22 @@ function logout() {
   checkAuth();
 }
 
+// ==========================================
+// 1. GESTION DU PORTFOLIO
+// ==========================================
+
 async function addProject() {
   const title = document.getElementById('new-title').value;
   const category = document.getElementById('new-category').value;
   const img = document.getElementById('new-img').value;
   const desc = document.getElementById('new-desc').value;
 
-  const projectData = { title: title, description: desc, category: category, image_url: img };
+  if (!title || !category || !img || !desc) {
+    alert("⚠️ Veuillez remplir tous les champs, y compris la description !");
+    return;
+  }
+
+  const projectData = { title: title, description: desc, category: category, image_url: img, is_visible: true };
 
   try {
     const response = await fetch(API_URL, {
@@ -81,10 +96,14 @@ async function addProject() {
       document.getElementById('new-category').value = '';
       document.getElementById('new-img').value = '';
       document.getElementById('new-desc').value = '';
-      alert("Projet ajouté avec succès !");
+      alert("✅ Projet ajouté avec succès !");
+    } else {
+      const errorData = await response.json();
+      alert("❌ Erreur du serveur : " + JSON.stringify(errorData));
     }
   } catch (error) {
     console.error("Erreur d'ajout :", error);
+    alert("❌ Impossible de contacter le serveur Python.");
   }
 }
 
@@ -93,29 +112,30 @@ async function fetchPortfolio() {
     const response = await fetch(API_URL);
     const projects = await response.json();
 
-    // 1. Mise à jour de la grille (si on est sur index.html)
     const grid = document.getElementById('portfolio-grid');
     if (grid) {
       grid.innerHTML = "";
       projects.forEach(project => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        const fullImageUrl = project.image_url.startsWith('http') ? project.image_url : `http://127.0.0.1:8000/${project.image_url}`;
-        card.onclick = () => openModal(fullImageUrl);
-        card.innerHTML = `
-          <img src="${fullImageUrl}" alt="${project.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Nexus+Web'">
-          <div class="card-content">
-              <span class="category">${project.category}</span>
-              <h3>${project.title}</h3>
-              <p>${project.description}</p>
-          </div>
-        `;
-        grid.appendChild(card);
+        if (project.is_visible !== false) {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const fullImageUrl = project.image_url.startsWith('http') ? project.image_url : `${BASE_URL}/${project.image_url}`;
+          card.onclick = () => openModal(fullImageUrl);
+          card.innerHTML = `
+            <img src="${fullImageUrl}" alt="${project.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Nexus+Web'">
+            <div class="card-content">
+                <span class="category">${project.category}</span>
+                <h3>${project.title}</h3>
+                <p>${project.description}</p>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
       });
     }
 
-    // 2. Mise à jour du graphique (si on est sur admin.html)
     updateAdminChart(projects);
+    updateAdminPortfolioList(projects);
 
   } catch (error) {
     console.error("Erreur API :", error);
@@ -153,15 +173,160 @@ function updateAdminChart(projects) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom' }
-      },
+      plugins: { legend: { position: 'bottom' } },
       cutout: '70%'
     }
   });
 }
 
-// --- MODAL ---
+// ==========================================
+// 2. FONCTIONS DE GESTION (CACHER / SUPPRIMER)
+// ==========================================
+
+function updateAdminPortfolioList(projects) {
+  const tbody = document.getElementById('admin-portfolio-list');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+  projects.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = "1px solid #e2e8f0";
+
+    const visibilityBtn = p.is_visible === false
+      ? `<button onclick="toggleProjectVisibility(${p.id})" style="background: #f59e0b; padding: 6px 12px; font-size: 0.85rem; width: auto; border-radius: 6px;">👁️ Rendre Visible</button>`
+      : `<button onclick="toggleProjectVisibility(${p.id})" style="background: #64748b; padding: 6px 12px; font-size: 0.85rem; width: auto; border-radius: 6px;">🙈 Cacher</button>`;
+
+    const statusBadge = p.is_visible === false
+      ? `<span style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Caché</span>`
+      : `<span style="background: #d1fae5; color: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">En Ligne</span>`;
+
+    const imgUrl = p.image_url.startsWith('http') ? p.image_url : `${BASE_URL}/${p.image_url}`;
+
+    tr.innerHTML = `
+      <td style="padding: 12px;"><img src="${imgUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;" onerror="this.src='https://via.placeholder.com/50'"></td>
+      <td style="padding: 12px; font-weight: bold; color: #0f172a;">${p.title}</td>
+      <td style="padding: 12px; color: #64748b;">${p.category}</td>
+      <td style="padding: 12px;">${statusBadge}</td>
+      <td style="padding: 12px; text-align: center; display: flex; gap: 10px; justify-content: center; align-items: center; height: 100%;">
+        ${visibilityBtn}
+        <button onclick="deleteProject(${p.id})" style="background: #ef4444; padding: 6px 12px; font-size: 0.85rem; width: auto; border-radius: 6px;">🗑️ Supprimer</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function deleteProject(id) {
+  if (!confirm("⚠️ Voulez-vous vraiment supprimer définitivement cette maquette ?")) return;
+  try {
+    const response = await fetch(`${API_URL}${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) fetchPortfolio();
+  } catch (error) { console.error(error); }
+}
+
+async function toggleProjectVisibility(id) {
+  try {
+    const response = await fetch(`${API_URL}${id}/toggle`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) fetchPortfolio();
+  } catch (error) { console.error(error); }
+}
+
+// ==========================================
+// 3. FONCTIONS CRM (DEMANDES CLIENTS)
+// ==========================================
+
+async function submitClientRequest() {
+  const data = {
+    company: document.getElementById('client-company').value,
+    manager: document.getElementById('client-manager').value,
+    email: document.getElementById('client-email').value,
+    whatsapp: document.getElementById('client-whatsapp').value
+  };
+
+  try {
+    const response = await fetch(`${BASE_URL}/submit-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      alert("🚀 Demande envoyée avec succès !");
+      document.getElementById('client-form').reset();
+    }
+  } catch (error) { console.error(error); }
+}
+
+async function loadAdminRequests() {
+  const tbody = document.getElementById('crm-table-body');
+  if (!tbody) return;
+
+  try {
+    const response = await fetch(`${BASE_URL}/admin/requests`);
+    if (response.ok) {
+      const requests = await response.json();
+      tbody.innerHTML = '';
+
+      requests.reverse().forEach(req => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = "1px solid #e2e8f0";
+
+        let dateStr = "Date inconnue";
+        let timeStr = "";
+        if (req.created_at) {
+          const dateObj = new Date(req.created_at);
+          dateStr = dateObj.toLocaleDateString('fr-FR');
+          timeStr = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        const waNumber = req.whatsapp ? req.whatsapp.replace(/[^0-9]/g, '') : "";
+
+        // MODIFICATION : AJOUT DU BOUTON SUPPRIMER ICI
+        tr.innerHTML = `
+          <td style="padding: 12px; color: #64748b;">📅 ${dateStr}<br>🕒 ${timeStr}</td>
+          <td style="padding: 12px; font-weight: bold; color: #0f172a;">🏢 ${req.company}</td>
+          <td style="padding: 12px;">👤 ${req.manager}</td>
+          <td style="padding: 12px;"><a href="mailto:${req.email}" style="color: #3b82f6; text-decoration: none;">✉️ ${req.email}</a></td>
+          <td style="padding: 12px; text-align: center;">
+            <span style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: #475569;">${req.whatsapp}</span>
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <a href="https://wa.me/${waNumber}" target="_blank" style="background: #10b981; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; display: inline-block;">
+                  Ouvrir Chat 💬
+                </a>
+                <button onclick="deleteCRMRequest(${req.id})" style="background: #ef4444; color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; border: none; cursor: pointer;">
+                  🗑️
+                </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  } catch (error) { console.error(error); }
+}
+
+// NOUVELLE FONCTION POUR SUPPRIMER CRM
+async function deleteCRMRequest(id) {
+  if (!confirm("⚠️ Voulez-vous vraiment supprimer cette demande client ?")) return;
+  try {
+    const response = await fetch(`${BASE_URL}/admin/requests/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) loadAdminRequests();
+  } catch (error) { console.error(error); }
+}
+
+// ==========================================
+// 4. MODALS (IMAGES ET GUIDE)
+// ==========================================
+
 function openModal(imgUrl) {
   const modal = document.getElementById('image-modal');
   const modalImg = document.getElementById('modal-img');
@@ -180,13 +345,11 @@ function closeModal() {
   }
 }
 
-
-// --- FONCTIONS POUR LE GUIDE CLIENT FLOTTANT ---
 function openGuideModal() {
   const guideModal = document.getElementById('guide-modal');
   if (guideModal) {
     guideModal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Empêche de scroller derrière
+    document.body.style.overflow = 'hidden';
   }
 }
 
@@ -194,11 +357,10 @@ function closeGuideModal() {
   const guideModal = document.getElementById('guide-modal');
   if (guideModal) {
     guideModal.style.display = 'none';
-    document.body.style.overflow = 'auto'; // Réactive le scroll
+    document.body.style.overflow = 'auto';
   }
 }
 
-// Fermer le guide si on clique en dehors de la boîte blanche
 window.onclick = function(event) {
   const guideModal = document.getElementById('guide-modal');
   if (event.target === guideModal) {
