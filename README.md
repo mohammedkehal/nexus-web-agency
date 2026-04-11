@@ -5,4 +5,8 @@
 
 # Nexus Web Agency - Plateforme Intégrée
 
+<<<<<<< HEAD
 Nexus Web Rabat est une solution full-stack complète pour la gestion d'une agence digitale...
+=======
+Nexus Web Rabat est une solution full-stack complète pour la gestion d'une agence digitale...
+>>>>>>> a16b58a286d7edc727bd54ade82ed7b073733993
